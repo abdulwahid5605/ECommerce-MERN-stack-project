@@ -6,6 +6,8 @@
 
 const mongoose = require("mongoose");
 const validator = require("validator");
+const bcrypt=require("bcryptjs")
+const jwt=require("jsonwebtoken")
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -49,9 +51,21 @@ const userSchema = new mongoose.Schema({
 // why we have used a function instead of a call back function?
 // because we have to use this.password which can be written only inside function but not in a call back function
 // what is the function of next here?
-// 
+// next will return nothing and is used in case password is already converted to hash
 userSchema.pre("save",async function(next)
 {
-  this
+  // agr password pehlay se hi modify ho to dubara hash nahi krna is waja se ye condition laga di ha
+  if(!this.isModified("password"))
+  {
+    next()
+  }
+  // 10 is the power, it tells us that password kitna strong rakhna ha
+  this.password=await bcrypt.hash(this.password,10)
 })
+// userSchema.methods.getjwttoken=function()
+// {
+//   return jwt.sign({id:this._id},process.env.JWT_SECRET,{
+//     expiresIn:process.env.JWT_EXPIRE,
+//   })
+// }
 module.exports=mongoose.model("User",userSchema)

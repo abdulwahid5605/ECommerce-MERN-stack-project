@@ -1,7 +1,6 @@
 const ErrorHander = require("../utils/errorHander")
 const catchAsyncError = require("../middleware/catchAsyncError")
 const User=require("../models/userModels")
-const bcrypt=require("bcryptjs")
 
 exports.registerUser=catchAsyncError(async(req,res,next)=>
 {
